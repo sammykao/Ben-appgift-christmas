@@ -1,4 +1,4 @@
-import type { ExpoConfig } from "expo-router/entry";
+import type { ExpoConfig } from "expo/config";
 
 const config: ExpoConfig = {
   name: "The MentalPitch",

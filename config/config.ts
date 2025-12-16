@@ -1,3 +1,4 @@
+/// <reference path="../expo-env.d.ts" />
 import Constants from "expo-constants";
 
 type ExtraConfig = {
