@@ -1,3 +1,6 @@
+/// <reference path="./expo-env.d.ts" />
+
+
 import type { ExpoConfig } from "expo/config";
 
 const config: ExpoConfig = {
