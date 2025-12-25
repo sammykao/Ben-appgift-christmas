@@ -387,3 +387,4 @@ export async function getProfileStatsSummary(): Promise<ProfileStatsSummary> {
     mostActiveWorkoutType,
   };
 }
+

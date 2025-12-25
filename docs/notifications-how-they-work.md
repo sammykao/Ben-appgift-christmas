@@ -140,3 +140,4 @@ console.log("Scheduled notifications:", scheduled);
 2. **Streak Alerts**: Special notifications when streak is at risk
 3. **Weekly Summaries**: "Your week in review" notifications
 4. **Push Notifications**: Server-side push for cross-device sync
+

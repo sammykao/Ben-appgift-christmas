@@ -52,3 +52,4 @@ export function validateMoodScore(moodScore: string): number | null {
 
   return numeric;
 }
+

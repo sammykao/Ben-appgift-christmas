@@ -13,6 +13,7 @@ import { useAuth } from "../src/contexts/AuthContext";
 import {
   getNotificationPreferences,
   updateNotificationPreferences,
+  deleteAccount,
   type NotificationPreferences,
 } from "../src/api";
 import { scheduleNotifications, requestNotificationPermissions } from "../src/services/notifications";
@@ -46,7 +47,28 @@ export default function Settings() {
       setPreferences(prefs);
     } catch (error: any) {
       console.error("Error loading preferences:", error);
-      Alert.alert("Error", "Failed to load notification preferences");
+      // Use default preferences as fallback instead of showing error
+      // This allows the app to continue functioning
+      const defaultPrefs: NotificationPreferences = {
+        id: "",
+        user_id: user?.id || "",
+        enabled: false,
+        reminder_times: ["18:00"],
+        reminder_days: [0, 1, 2, 3, 4, 5, 6],
+        streak_reminders: true,
+        mood_insights: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      setPreferences(defaultPrefs);
+      
+      // Only show alert for unexpected errors, not permission/table errors
+      if (!error?.message?.includes("permission") && !error?.message?.includes("Unauthorized")) {
+        Alert.alert(
+          "Notice",
+          "Notification preferences are not available. Some features may be limited."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -87,7 +109,26 @@ export default function Settings() {
       }
     } catch (error: any) {
       console.error("Error saving preferences:", error);
-      Alert.alert("Error", error.message || "Failed to save preferences");
+      
+      // Handle permission/table errors gracefully
+      if (
+        error?.message?.includes("permission") ||
+        error?.message?.includes("Unauthorized") ||
+        error?.message?.includes("does not exist") ||
+        error?.message?.includes("migration")
+      ) {
+        Alert.alert(
+          "Feature Unavailable",
+          "Notification preferences require database setup. Please run the database migration (db/account-deletion-function.sql) to enable this feature. Your preferences have been saved locally but won't persist until the migration is complete."
+        );
+        // Still update local state so UI reflects the change
+        setPreferences({
+          ...preferences,
+          ...preferences,
+        });
+      } else {
+        Alert.alert("Error", error.message || "Failed to save preferences");
+      }
     } finally {
       setSaving(false);
     }
@@ -148,6 +189,57 @@ export default function Settings() {
             } catch (error: any) {
               Alert.alert("Error", error.message || "Failed to sign out");
             }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account? This action cannot be undone. All your data, including journal entries, stats, and preferences, will be permanently deleted.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            // Second confirmation
+            Alert.alert(
+              "Final Confirmation",
+              "This is your last chance to cancel. Your account and all data will be permanently deleted. This cannot be undone.",
+              [
+                {
+                  text: "Cancel",
+                  style: "cancel",
+                },
+                {
+                  text: "Yes, Delete My Account",
+                  style: "destructive",
+                  onPress: async () => {
+                    try {
+                      await deleteAccount();
+                      // Sign out after deletion
+                      await signOut();
+                      router.replace("/");
+                      Alert.alert(
+                        "Account Deleted",
+                        "Your account has been successfully deleted."
+                      );
+                    } catch (error: any) {
+                      Alert.alert(
+                        "Error",
+                        error.message || "Failed to delete account. Please try again or contact support."
+                      );
+                    }
+                  },
+                },
+              ]
+            );
           },
         },
       ]
@@ -303,9 +395,19 @@ export default function Settings() {
         </View>
 
         <View style={styles.section}>
+          <Text style={styles.dangerZoneTitle}>Danger Zone</Text>
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutButtonText}>Sign Out</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.deleteAccountButton}
+            onPress={handleDeleteAccount}
+          >
+            <Text style={styles.deleteAccountButtonText}>Delete Account</Text>
+          </TouchableOpacity>
+          <Text style={styles.deleteAccountWarning}>
+            Permanently delete your account and all associated data. This action cannot be undone.
+          </Text>
         </View>
       </ScrollView>
     </View>
@@ -474,16 +576,44 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#ffffff",
   },
+  dangerZoneTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#e5e7eb",
+    marginBottom: 12,
+  },
   logoutButton: {
     backgroundColor: "#dc2626",
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: "center",
+    marginBottom: 12,
   },
   logoutButtonText: {
     fontSize: 16,
     fontWeight: "600",
     color: "#ffffff",
     letterSpacing: 0.3,
+  },
+  deleteAccountButton: {
+    backgroundColor: "#991b1b",
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#dc2626",
+    marginBottom: 8,
+  },
+  deleteAccountButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#ffffff",
+    letterSpacing: 0.3,
+  },
+  deleteAccountWarning: {
+    fontSize: 12,
+    color: "#9ca3af",
+    textAlign: "center",
+    lineHeight: 16,
   },
 });

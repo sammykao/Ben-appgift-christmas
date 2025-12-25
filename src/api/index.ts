@@ -22,3 +22,4 @@ export * from "./foodMeals";
 export * from "./profiles";
 export * from "./stats";
 export * from "./notificationPreferences";
+export * from "./account";

@@ -136,3 +136,4 @@ pnpm start
 npx expo run:ios              # Simulator
 npx expo run:ios --device     # Physical iPhone
 ```
+

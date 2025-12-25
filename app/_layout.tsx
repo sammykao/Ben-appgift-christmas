@@ -27,9 +27,15 @@ function NotificationSetup() {
         }
       } catch (error: any) {
         // Silently handle errors - don't crash the app
-        // Common errors: permissions denied, Expo Go limitations
-        if (error?.message?.includes("permission") || error?.message?.includes("Unauthorized")) {
-          console.warn("Notification permissions not available:", error.message);
+        // Common errors: permissions denied, Expo Go limitations, table doesn't exist
+        const errorMessage = error?.message || "";
+        if (
+          errorMessage.includes("permission") ||
+          errorMessage.includes("Unauthorized") ||
+          errorMessage.includes("does not exist") ||
+          errorMessage.includes("relation")
+        ) {
+          console.warn("Notification preferences not available:", error.message);
         } else {
           console.error("Error initializing notifications:", error);
         }
