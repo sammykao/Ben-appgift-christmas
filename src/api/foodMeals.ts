@@ -31,7 +31,7 @@ export async function getMealsByEntryId(
     .from("food_meals")
     .select("*")
     .eq("entry_id", entryId)
-    .order("time_of_day", { ascending: true });
+    .order("time_of_day", { ascending: true, nullsFirst: false }); // Put null times at end
 
   if (error) {
     throw handleSupabaseError(error);
@@ -78,7 +78,7 @@ export async function getMealsByType(
     .select("*")
     .eq("entry_id", entryId)
     .eq("meal_type", mealType)
-    .order("time_of_day", { ascending: true });
+    .order("time_of_day", { ascending: true, nullsFirst: false }); // Put null times at end
 
   if (error) {
     throw handleSupabaseError(error);
@@ -233,7 +233,7 @@ export async function getMealsByEntryIds(
     .select("*")
     .in("entry_id", entryIds)
     .order("entry_id", { ascending: true })
-    .order("time_of_day", { ascending: true });
+    .order("time_of_day", { ascending: true, nullsFirst: false }); // Put null times at end
 
   if (error) {
     throw handleSupabaseError(error);

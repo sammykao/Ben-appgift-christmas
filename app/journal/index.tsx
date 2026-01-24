@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "../../src/contexts/AuthContext";
 import { getEntriesByDate, type JournalEntry } from "../../src/api";
 
@@ -49,24 +50,28 @@ export default function JournalScreen() {
   const targetDate = date ? new Date(date) : new Date();
   const isoDate = targetDate.toISOString().slice(0, 10); // YYYY-MM-DD
 
-  useEffect(() => {
-    const loadEntries = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getEntriesByDate(isoDate);
-        setEntries(data);
-      } catch (err: any) {
-        setError(err?.message || "Failed to load entries");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user) {
-      loadEntries();
+  const loadEntries = useCallback(async () => {
+    if (!user) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getEntriesByDate(isoDate);
+      setEntries(data);
+    } catch (err: any) {
+      setError(err?.message || "Failed to load entries");
+    } finally {
+      setLoading(false);
     }
   }, [user, isoDate]);
+
+  // Load entries when screen comes into focus (e.g., after editing an entry)
+  // This ensures the list refreshes when returning from the detail page
+  useFocusEffect(
+    useCallback(() => {
+      loadEntries();
+    }, [loadEntries])
+  );
 
   const renderItem = ({ item }: { item: JournalEntry }) => {
     return (

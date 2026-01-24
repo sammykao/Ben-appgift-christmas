@@ -231,7 +231,8 @@ export default function JournalEntryDetail() {
           keyboardShouldPersistTaps="always"
           showsVerticalScrollIndicator={true}
           scrollEnabled={true}
-          nestedScrollEnabled={true}
+          nestedScrollEnabled={false}
+          bounces={true}
         >
           <TimeInput
             timeString={timeString}

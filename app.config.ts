@@ -20,6 +20,9 @@ const config: ExpoConfig = {
     buildNumber: "1",
     supportsTablet: true,
     requireFullScreen: false,
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false
+    }
   },
   android: {
     package: "com.mentalpitch.app",
@@ -30,9 +33,13 @@ const config: ExpoConfig = {
     },
   },
   extra: {
+    eas: {
+      projectId: "b3ae1797-9e71-41a3-b535-c49b1d2f8b4c"
+    },
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
     supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
-  }
+  },
+  
 };
 
 export default config;

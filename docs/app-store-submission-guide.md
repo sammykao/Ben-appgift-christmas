@@ -71,7 +71,7 @@ If your logo isn't 1024x1024, resize it before building. You can use online tool
 ### First Build (Production)
 
 ```bash
-eas build --platform ios --profile production
+   eas build --platform ios --profile production
 ```
 
 **What happens:**

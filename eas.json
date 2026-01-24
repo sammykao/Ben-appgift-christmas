@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 7.0.0"
+    "version": ">= 7.0.0",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -14,24 +15,16 @@
       }
     },
     "production": {
-      "autoIncrement": true,
-      "ios": {
-        "bundleIdentifier": "com.mentalpitch.app"
-      },
-      "android": {
-        "package": "com.mentalpitch.app"
-      }
+      "autoIncrement": true
     }
   },
   "submit": {
     "production": {
       "ios": {
-        "appleId": "your-email@example.com",
-        "ascAppId": "your-app-store-connect-app-id",
-        "appleTeamId": "your-team-id"
+        "appleId": "ben.pensky@gmail.com",
+        "ascAppId": "6757159027",
+        "appleTeamId": "8SN9PV9ZD5"
       }
     }
   }
 }
-
-

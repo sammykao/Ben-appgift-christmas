@@ -14,7 +14,6 @@ export default function Index() {
   const stackOpacity = useRef(new Animated.Value(0)).current;
   const stackTranslateY = useRef(new Animated.Value(24)).current;
   const journalPulse = useRef(new Animated.Value(0)).current;
-  const sponsorPulse = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (loading) return;
@@ -45,7 +44,7 @@ export default function Index() {
       }),
     ]).start();
 
-    // Idle pulsing for primary CTA and sponsor logo
+    // Idle pulsing for primary CTA
     Animated.loop(
       Animated.sequence([
         Animated.timing(journalPulse, {
@@ -60,22 +59,7 @@ export default function Index() {
         }),
       ])
     ).start();
-
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(sponsorPulse, {
-          toValue: 1,
-          duration: 2600,
-          useNativeDriver: true,
-        }),
-        Animated.timing(sponsorPulse, {
-          toValue: 0,
-          duration: 2600,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, [loading, logoOpacity, logoScale, stackOpacity, stackTranslateY, journalPulse, sponsorPulse]);
+  }, [loading, logoOpacity, logoScale, stackOpacity, stackTranslateY, journalPulse]);
 
   // Show loading screen while checking auth state
   if (loading) {
@@ -103,24 +87,6 @@ export default function Index() {
         />
 
         <View style={styles.lowerSection}>
-          <Animated.View
-            style={[
-              styles.sponsorContainer,
-              {
-                opacity: sponsorPulse.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0.7, 1],
-                }),
-              },
-            ]}
-          >
-            <Image
-              source={require("../assets/images/company_logo.png")}
-              style={styles.sponsorLogo}
-              resizeMode="contain"
-            />
-          </Animated.View>
-
           <Animated.View
             style={{
               transform: [
@@ -206,16 +172,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#020617",
     letterSpacing: 0.5,
-  },
-  sponsorContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 16,
-  },
-  sponsorLogo: {
-    width: 200,
-    height: 80,
-    opacity: 0.8,
   },
   statsButton: {
     backgroundColor: "#0f172a",

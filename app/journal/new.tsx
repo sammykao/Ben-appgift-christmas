@@ -30,6 +30,7 @@ import { normalizeTime, validateMoodScore } from "../../src/utils/timeValidation
 
 export default function NewJournalEntryScreen() {
   const router = useRouter();
+  const { date } = useLocalSearchParams<{ date?: string }>();
   const [step, setStep] = useState<"type" | "questions">("type");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -111,9 +112,9 @@ export default function NewJournalEntryScreen() {
     try {
       setSaving(true);
 
-      // Validate and normalize time
-      const normalizedTime = normalizeTime(timeString, amPm);
-      if (!normalizedTime) {
+      // Validate and normalize time (only required for non-food entries)
+      const normalizedTime = isFoodType ? null : normalizeTime(timeString, amPm);
+      if (!isFoodType && !normalizedTime) {
         Alert.alert("Error", "Please enter a valid time (hour: 1-12, minute: 0-59).");
         setSaving(false);
         return;
@@ -139,7 +140,7 @@ export default function NewJournalEntryScreen() {
       });
 
       if (isFoodType) {
-        // Save meals for Food entry
+        // Save meals for Food entry (no time_of_day required)
         const mealInputs = (["Breakfast", "Lunch", "Snack", "Dinner"] as MealType[])
           .map((mealType) => ({
             mealType,
@@ -152,7 +153,7 @@ export default function NewJournalEntryScreen() {
           .map(({ mealType, fields }) => ({
             entry_id: entry.id,
             meal_type: mealType,
-            time_of_day: normalizedTime,
+            // time_of_day removed - no longer required for food entries
             food_items: fields.food.trim() || "(unspecified)",
             feeling_notes: fields.feeling.trim() || null,
           }));
@@ -192,7 +193,7 @@ export default function NewJournalEntryScreen() {
   };
 
   const isFoodType =
-    selectedType && selectedType.name.toLowerCase().includes("food");
+    selectedType ? selectedType.name.toLowerCase().includes("food") : false;
 
   if (loading && step === "type") {
     return (
@@ -252,12 +253,14 @@ export default function NewJournalEntryScreen() {
             scrollEnabled={true}
             nestedScrollEnabled={true}
           >
-            <TimeInput
-              timeString={timeString}
-              amPm={amPm}
-              onTimeChange={setTimeString}
-              onAmPmChange={setAmPm}
-            />
+            {!isFoodType && (
+              <TimeInput
+                timeString={timeString}
+                amPm={amPm}
+                onTimeChange={setTimeString}
+                onAmPmChange={setAmPm}
+              />
+            )}
 
             <MoodScoreInput
               moodScore={moodScore}

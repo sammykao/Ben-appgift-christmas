@@ -137,7 +137,7 @@ export interface FoodMeal {
   id: UUID;
   entry_id: UUID;
   meal_type: MealType;
-  time_of_day: string; // ISO 8601 time with timezone
+  time_of_day: string | null; // ISO 8601 time with timezone (nullable)
   food_items: string;
   feeling_notes: string | null;
   created_at: string;
@@ -146,7 +146,7 @@ export interface FoodMeal {
 export interface FoodMealInsert {
   entry_id: UUID;
   meal_type: MealType;
-  time_of_day: string;
+  time_of_day?: string | null; // Optional - no longer required for food entries
   food_items: string;
   feeling_notes?: string | null;
 }
