@@ -147,7 +147,15 @@ export default function CalendarScreen() {
     };
 
     loadMoodAverages();
-  }, [year, month]);
+  }, [
+    year,
+    month,
+    calendarOpacity,
+    calendarScale,
+    dayAnimations,
+    headerOpacity,
+    headerTranslateY,
+  ]);
 
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(year, month - 2, 1));
@@ -229,7 +237,7 @@ export default function CalendarScreen() {
           >
             {/* Day headers */}
             <Animated.View style={styles.dayHeaders}>
-              {DAYS_OF_WEEK.map((day, idx) => (
+              {DAYS_OF_WEEK.map((day) => (
                 <Animated.View
                   key={day}
                   style={[
@@ -261,17 +269,20 @@ export default function CalendarScreen() {
                   return (
                     <Animated.View
                       key={`empty-${index}`}
-                      style={{
-                        opacity: animValue,
-                        transform: [
-                          {
-                            scale: animValue.interpolate({
-                              inputRange: [0, 1],
-                              outputRange: [0.5, 1],
-                            }),
-                          },
-                        ],
-                      }}
+                      style={[
+                        styles.dayCellWrapper,
+                        {
+                          opacity: animValue,
+                          transform: [
+                            {
+                              scale: animValue.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0.5, 1],
+                              }),
+                            },
+                          ],
+                        },
+                      ]}
                     >
                       <View style={styles.dayCell} />
                     </Animated.View>
@@ -289,17 +300,20 @@ export default function CalendarScreen() {
                 return (
                   <Animated.View
                     key={day}
-                    style={{
-                      opacity: animValue,
-                      transform: [
-                        {
-                          scale: animValue.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [0.5, 1],
-                          }),
-                        },
-                      ],
-                    }}
+                    style={[
+                      styles.dayCellWrapper,
+                      {
+                        opacity: animValue,
+                        transform: [
+                          {
+                            scale: animValue.interpolate({
+                              inputRange: [0, 1],
+                              outputRange: [0.5, 1],
+                            }),
+                          },
+                        ],
+                      },
+                    ]}
                   >
                     <TouchableOpacity
                       style={[styles.dayCell, { backgroundColor: color }]}
@@ -408,10 +422,14 @@ const styles = StyleSheet.create({
   calendarGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 6,
+  },
+  dayCellWrapper: {
+    width: `${100 / 7}%`,
+    paddingHorizontal: 3,
+    paddingVertical: 3,
   },
   dayCell: {
-    width: "13.5%",
+    width: "100%",
     aspectRatio: 1,
     borderRadius: 16,
     alignItems: "center",

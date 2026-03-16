@@ -8,7 +8,6 @@
  * - Caching: Consider implementing server-side caching for expensive calculations
  */
 
-import { getSupabaseClient } from "../services/supabaseClient";
 import { getEntriesByDateRange, getJournalEntries } from "./journalEntries";
 import { getWorkoutTypes } from "./workoutTypes";
 import type {
@@ -20,8 +19,8 @@ import type {
   StatsSummary,
   StatsData,
   JournalEntry,
+  ProfileStatsSummary,
 } from "./types";
-import { handleSupabaseError } from "./errors";
 import { addDaysLocal, parseISODateLocal, toISODateLocal, todayLocalDateString } from "../utils/date";
 
 /**
@@ -334,18 +333,6 @@ export async function getStats(period: StatsPeriod): Promise<StatsData> {
     timePatterns: timePatternStats,
     insights,
   };
-}
-
-/**
- * Get quick stats summary for profile page.
- * Lightweight version of full stats for quick display.
- */
-export interface ProfileStatsSummary {
-  totalEntries: number;
-  currentStreak: number;
-  longestStreak: number;
-  averageMood: number | null;
-  mostActiveWorkoutType: string | null;
 }
 
 export async function getProfileStatsSummary(): Promise<ProfileStatsSummary> {

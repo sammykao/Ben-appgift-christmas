@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import {
   getWorkoutTypes,
   getQuestionsByWorkoutType,
@@ -344,10 +345,7 @@ export default function NewJournalEntryScreen() {
                 style={styles.bottomIconButton}
                 onPress={() => router.push("/")}
               >
-                <View style={styles.homeIcon}>
-                  <View style={styles.homeIconRoof} />
-                  <View style={styles.homeIconBase} />
-                </View>
+                <Ionicons name="home" size={28} color="#3b82f6" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.bottomIconButton}
@@ -634,7 +632,7 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 999,
     borderWidth: 1.5,
-    borderColor: "#38bdf8",
+    borderColor: "#3b82f6",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#020617",
@@ -644,38 +642,15 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 6,
     borderWidth: 1.5,
-    borderColor: "#38bdf8",
+    borderColor: "#3b82f6",
     overflow: "hidden",
   },
   calendarHeader: {
     height: 10,
-    backgroundColor: "#38bdf8",
+    backgroundColor: "#3b82f6",
   },
   calendarBody: {
     flex: 1,
     backgroundColor: "#020617",
-  },
-  homeIcon: {
-    width: 28,
-    height: 28,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  homeIconRoof: {
-    width: 0,
-    height: 0,
-    borderLeftWidth: 8,
-    borderRightWidth: 8,
-    borderBottomWidth: 10,
-    borderLeftColor: "transparent",
-    borderRightColor: "transparent",
-    borderBottomColor: "#38bdf8",
-    marginBottom: -2,
-  },
-  homeIconBase: {
-    width: 16,
-    height: 10,
-    backgroundColor: "#38bdf8",
-    borderRadius: 1,
   },
 });

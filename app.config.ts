@@ -6,7 +6,7 @@ import type { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "The MentalPitch",
   slug: "the-mental-pitch",
-  version: "1.1.1",
+  version: "1.1.2",
   orientation: "portrait",
   scheme: "thementalpitch",
   platforms: ["ios", "android", "web"],
