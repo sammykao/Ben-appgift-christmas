@@ -22,19 +22,19 @@ import type {
   JournalEntry,
 } from "./types";
 import { handleSupabaseError } from "./errors";
+import { addDaysLocal, parseISODateLocal, toISODateLocal, todayLocalDateString } from "../utils/date";
 
 /**
  * Calculate date range for a given period ending today.
  */
 function getDateRangeForPeriod(period: StatsPeriod): { startDate: string; endDate: string } {
-  const today = new Date();
-  const endDate = today.toISOString().slice(0, 10); // YYYY-MM-DD
+  const endDate = todayLocalDateString(); // YYYY-MM-DD (local)
+  const today = parseISODateLocal(endDate);
 
   let startDate: Date;
   switch (period) {
     case "week":
-      startDate = new Date(today);
-      startDate.setDate(today.getDate() - 6); // Last 7 days including today
+      startDate = parseISODateLocal(addDaysLocal(endDate, -6)); // Last 7 days including today
       break;
     case "month":
       startDate = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -45,7 +45,7 @@ function getDateRangeForPeriod(period: StatsPeriod): { startDate: string; endDat
   }
 
   return {
-    startDate: startDate.toISOString().slice(0, 10),
+    startDate: toISODateLocal(startDate),
     endDate,
   };
 }
@@ -66,11 +66,11 @@ function calculateStreak(entries: JournalEntry[]): StreakData {
 
   // Calculate current streak (from today backwards)
   let currentStreak = 0;
-  const today = new Date().toISOString().slice(0, 10);
-  let checkDate = new Date(today);
+  const today = todayLocalDateString();
+  let checkDate = parseISODateLocal(today);
 
   while (true) {
-    const dateStr = checkDate.toISOString().slice(0, 10);
+    const dateStr = toISODateLocal(checkDate);
     if (datesWithEntries.has(dateStr)) {
       currentStreak++;
       checkDate.setDate(checkDate.getDate() - 1);
@@ -85,7 +85,7 @@ function calculateStreak(entries: JournalEntry[]): StreakData {
   let prevDate: Date | null = null;
 
   for (const dateStr of sortedDates) {
-    const currentDate = new Date(dateStr);
+    const currentDate = parseISODateLocal(dateStr);
     if (prevDate === null) {
       tempStreak = 1;
     } else {
@@ -387,4 +387,3 @@ export async function getProfileStatsSummary(): Promise<ProfileStatsSummary> {
     mostActiveWorkoutType,
   };
 }
-

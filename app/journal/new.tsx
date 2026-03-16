@@ -27,6 +27,7 @@ import { TimeInput } from "../../src/components/TimeInput";
 import { MoodScoreInput } from "../../src/components/MoodScoreInput";
 import { QuestionsSection } from "../../src/components/QuestionsSection";
 import { normalizeTime, validateMoodScore } from "../../src/utils/timeValidation";
+import { todayLocalDateString } from "../../src/utils/date";
 
 export default function NewJournalEntryScreen() {
   const router = useRouter();
@@ -129,8 +130,7 @@ export default function NewJournalEntryScreen() {
       }
 
       // Use provided date or default to today
-      const targetDate = date ? new Date(date) : new Date();
-      const isoDate = targetDate.toISOString().slice(0, 10);
+      const isoDate = typeof date === "string" ? date : todayLocalDateString();
 
       const entry = await createEntry({
         workout_type_id: selectedType.id,

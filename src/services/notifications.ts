@@ -14,6 +14,7 @@ import Constants from "expo-constants";
 import { Platform } from "react-native";
 import type { NotificationPreferences } from "../api/types";
 import { getEntriesByDate } from "../api/journalEntries";
+import { toISODateLocal, todayLocalDateString } from "../utils/date";
 
 // Check if running in Expo Go (notifications have limited support)
 const isExpoGo = Constants.executionEnvironment === "storeClient";
@@ -82,8 +83,7 @@ export async function cancelAllNotifications(): Promise<void> {
  */
 export async function cancelTodaysReminders(): Promise<void> {
   const allNotifications = await Notifications.getAllScheduledNotificationsAsync();
-  const today = new Date();
-  const todayStr = today.toISOString().slice(0, 10); // YYYY-MM-DD
+  const todayStr = todayLocalDateString(); // YYYY-MM-DD (local)
 
   for (const notification of allNotifications) {
     const trigger = notification.trigger as Notifications.DailyTriggerInput;
@@ -92,7 +92,7 @@ export async function cancelTodaysReminders(): Promise<void> {
       // Note: This is a simplified approach - in production, you might want
       // to tag notifications with identifiers to cancel specific ones
       const notificationDate = new Date(notification.trigger as any);
-      if (notificationDate.toISOString().slice(0, 10) === todayStr) {
+      if (toISODateLocal(notificationDate) === todayStr) {
         await Notifications.cancelScheduledNotificationAsync(notification.identifier);
       }
     }
@@ -183,7 +183,7 @@ export async function scheduleNotifications(
  */
 export async function hasLoggedToday(): Promise<boolean> {
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = todayLocalDateString();
     const entries = await getEntriesByDate(today);
     return entries.length > 0;
   } catch (error) {
@@ -235,4 +235,3 @@ export function setupNotificationListeners(
     return () => {};
   }
 }
-

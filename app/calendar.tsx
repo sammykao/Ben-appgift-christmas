@@ -165,7 +165,10 @@ export default function CalendarScreen() {
 
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay = getFirstDayOfMonth(year, month);
-  const monthName = currentDate.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+  const monthName = currentDate.toLocaleDateString(undefined, {
+    month: "long",
+    year: "numeric",
+  });
 
   // Create calendar grid
   const calendarDays: (number | null)[] = [];
@@ -277,10 +280,11 @@ export default function CalendarScreen() {
 
                 const mood = getMoodForDate(day);
                 const color = getMoodColor(mood);
+                const now = new Date();
                 const isToday =
-                  day === new Date().getDate() &&
-                  month === new Date().getMonth() + 1 &&
-                  year === new Date().getFullYear();
+                  day === now.getDate() &&
+                  month === now.getMonth() + 1 &&
+                  year === now.getFullYear();
 
                 return (
                   <Animated.View
@@ -438,4 +442,3 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
 });
-

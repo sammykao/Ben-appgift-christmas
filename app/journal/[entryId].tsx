@@ -25,11 +25,10 @@ import { TimeInput } from "../../src/components/TimeInput";
 import { MoodScoreInput } from "../../src/components/MoodScoreInput";
 import { QuestionsSection } from "../../src/components/QuestionsSection";
 import { normalizeTime, validateMoodScore } from "../../src/utils/timeValidation";
+import { formatDateLocal } from "../../src/utils/date";
 
 function formatEntryDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return dateStr;
-  return d.toLocaleDateString(undefined, {
+  return formatDateLocal(dateStr, {
     weekday: "long",
     month: "short",
     day: "numeric",

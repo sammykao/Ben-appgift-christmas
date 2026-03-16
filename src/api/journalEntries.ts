@@ -19,6 +19,7 @@ import type {
   DailyMoodAverage,
 } from "./types";
 import { handleSupabaseError, NotFoundError, ValidationError } from "./errors";
+import { toISODateLocal } from "../utils/date";
 
 /**
  * Get all journal entries for the current user.
@@ -190,8 +191,8 @@ export async function getDailyMoodAveragesForMonth(
   const start = new Date(year, month - 1, 1);
   const end = new Date(year, month, 0); // last day of month
 
-  const startDate = start.toISOString().slice(0, 10);
-  const endDate = end.toISOString().slice(0, 10);
+  const startDate = toISODateLocal(start);
+  const endDate = toISODateLocal(end);
 
   const entries = await getEntriesByDateRange(startDate, endDate);
 

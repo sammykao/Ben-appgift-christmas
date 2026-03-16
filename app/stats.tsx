@@ -10,10 +10,10 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { getStats, type StatsPeriod, type StatsData } from "../src/api";
+import { formatDateLocal } from "../src/utils/date";
 
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return formatDateLocal(dateStr, { month: "short", day: "numeric" });
 }
 
 function SimpleMoodChart({ data }: { data: { date: string; averageMood: number | null }[] }) {
@@ -612,4 +612,3 @@ const styles = StyleSheet.create({
     color: "#64748b",
   },
 });
-

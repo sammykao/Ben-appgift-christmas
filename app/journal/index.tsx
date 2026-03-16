@@ -10,10 +10,11 @@ import {
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "../../src/contexts/AuthContext";
+import { formatDateLocal, parseISODateLocal, todayLocalDateString } from "../../src/utils/date";
 import { getEntriesByDate, type JournalEntry } from "../../src/api";
 
 function formatDateHeading(date: Date): string {
-  return date.toLocaleDateString(undefined, {
+  return formatDateLocal(date, {
     weekday: "long",
     month: "short",
     day: "numeric",
@@ -47,8 +48,9 @@ export default function JournalScreen() {
   const [error, setError] = useState<string | null>(null);
 
   // Use provided date or default to today
-  const targetDate = date ? new Date(date) : new Date();
-  const isoDate = targetDate.toISOString().slice(0, 10); // YYYY-MM-DD
+  const targetDateStr = typeof date === "string" ? date : todayLocalDateString();
+  const targetDate = parseISODateLocal(targetDateStr);
+  const isoDate = targetDateStr; // YYYY-MM-DD (UTC)
 
   const loadEntries = useCallback(async () => {
     if (!user) return;
